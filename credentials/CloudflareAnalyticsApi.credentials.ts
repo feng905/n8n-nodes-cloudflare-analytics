@@ -5,25 +5,25 @@ import {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class HttpBinApi implements ICredentialType {
-	name = 'httpbinApi';
-	displayName = 'HttpBin API';
-	documentationUrl = 'https://your-docs-url';
+export class CloudflareAnalyticsApi implements ICredentialType {
+	name = 'cloudflareAnalyticsApi';
+	displayName = 'Cloudflare Analytics API';
+	documentationUrl = 'https://developers.cloudflare.com/fundamentals/api/get-started/keys/';
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Token',
-			name: 'token',
+			displayName: 'Email',
+			name: 'email',
+			type: 'string',
+			default: '',
+		},
+		{
+			displayName: 'API Key',
+			name: 'apiKey',
 			type: 'string',
 			default: '',
 			typeOptions: {
 				password: true,
 			}
-		},
-		{
-			displayName: 'Domain',
-			name: 'domain',
-			type: 'string',
-			default: 'https://httpbin.org',
 		},
 	];
 
@@ -35,7 +35,9 @@ export class HttpBinApi implements ICredentialType {
 		type: 'generic',
 		properties: {
 			headers: {
-				Authorization: '={{"Bearer " + $credentials.token}}',
+				// Authorization: '={{"Bearer " + $credentials.token}}',
+				"X-Auth-Email": '={{$credentials.email}}',
+				"X-Auth-Key": '={{$credentials.apiKey}}',
 			},
 		},
 	};
@@ -43,8 +45,8 @@ export class HttpBinApi implements ICredentialType {
 	// The block below tells how this credential can be tested
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{$credentials?.domain}}',
-			url: '/bearer',
+			baseURL: 'https://api.cloudflare.com',
+			url: '/client/v4/accounts',
 		},
 	};
 }

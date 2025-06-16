@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>My HTML document</title>
+</head>
+<body>
+  <div class="container">
+    
+    {{ $json.formatedAccounts.map( item => {
+      return `
+        <div>
+          <h2 class="title"> ${item.zoneName} </h2>
+          <div class="content-block">
+                  <div class="name">请求</div>
+                  <div class="value">${item.sum.requests}</div>
+          </div>
+          <div class="content-block">
+                <div class="name">流量</div>
+                <div class="value">${item.sum.bytes}</div>
+          </div>
+    
+          <div class="content-block">
+            <div class="name">访问量</div>
+            <div class="value">${item.sum.visits}</div>
+          </div>
+    
+          <div class="content-block">
+            <div class="name">页面浏览量</div>
+            <div class="value">${item.sum.pageViews}</div>
+          </div>
+        </div>
+      `
+    }).join(' ') }}
+    
+</body>
+</html>
+
+<style>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 15px;
+        }
+        .title {
+          margin: 15px
+        }
+        .content-block {
+            padding: 15px;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+            display: inline-block;
+            width: 160px;
+        }
+        .name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .value {
+            color: #555;
+        }
+    </style>
+</style>
+
+<script>
+</script>
