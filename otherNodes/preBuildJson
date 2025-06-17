@@ -1,81 +1,110 @@
 // 字节转换函数（自适应单位）
 function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const units = ["KB", "MB", "GB", "TB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + units[i - 1]; // KB从1024开始
-  }
+  if (bytes < 1024) return bytes + "";
   
+  const k = 1024;
+  const units = ["KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + units[i - 1]; // KB从1024开始
+}
+
+function formatNumber(bytes, decimals = 2) {
+  if (bytes < 1024) return bytes + "";
   
+  const k = 1024;
+  const units = ["K", "M", "G", "T"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + units[i - 1]; // KB从1024开始
+}
+
+// Loop over input items and add a new field called 'myNewField' to the JSON of each one
+for (const item of $input.all()) {
+      
+      // 提取并整理数据
+      const inputData = item.json.accounts;
+
+      let allSum = undefined;
   
-  // Loop over input items and add a new field called 'myNewField' to the JSON of each one
-  for (const item of $input.all()) {
-  
-        // 提取并整理数据
-        const inputData = item.json.accounts;
-  
-        let allSum = undefined;
-    
-        const formatedAccounts = inputData.map(account => {
-          // 提取 sum 数据
-          const rawSum = account.headlineStats.data.viewer.accounts[0].deltas[0].sum;
-  
-          if(allSum === undefined){
-              allSum={};
-              Object.keys(rawSum).forEach(key => {
-              allSum[key] = 0; // 数值初始化为0（字节也先累加数字）
-            });
-          }
-          
-          // 转换 sum 中的所有字节字段
-          const formattedSum = {};
-          Object.keys(rawSum).forEach(key => {
-                if (key.toLowerCase().match('__typename')){
-                   return;
-                }
-                const value = rawSum[key];
-                // if (key.toLowerCase().includes('bytes')) {
-                if (key.toLowerCase().match('bytes')){
-                  const bandWidth=value/8
-                  formattedSum['bandWidth']=formatBytes(bandWidth);
-                }
-                formattedSum[key] = formatBytes(value);
-                allSum[key] = allSum[key] + value;
-          });
-          return {
-            zoneName: account.zoneName,
-            sum: formattedSum,
-          };
-        });
-  
-        const formattedAllSum = {};
-        Object.keys(allSum).forEach(key => {
-            if (key.toLowerCase().match('__typename')){
-               return;
+      const formatedAccounts = inputData.map(account => {
+        let returnValue = {
+              zoneName: account.zoneName,
+              sum: {},
             }
-              const value = allSum[key];
-             if (key.toLowerCase().match('bytes')){
-                 const bandWidth=value/8
-                 formattedAllSum['bandWidth']=formatBytes(bandWidth);
-             }
-             formattedAllSum[key] = formatBytes(value);
+        try {
+            // 提取 sum 数据
+            const rawSum = account.headlineStats.data.viewer.accounts[0].deltas[0].sum;
+            if(allSum === undefined){
+                allSum={};
+                Object.keys(rawSum).forEach(key => {
+                allSum[key] = 0; // 数值初始化为0（字节也先累加数字）
+              });
+            }
+            
+            // 转换 sum 中的所有字节字段
+            const formattedSum = {};
+            Object.keys(rawSum).forEach(key => {
+                  if (key.toLowerCase().match('__typename')){
+                     return;
+                  }
+                  const value = rawSum[key];
+                  // if (key.toLowerCase().includes('bytes')) {
+                  if (key.toLowerCase().match('bytes')){
+                    const bandWidth=value/8
+                    formattedSum['bandWidth']=formatBytes(bandWidth);
+                    formattedSum[key] = formatBytes(value);
+                  }else {
+                    formattedSum[key] = formatNumber(value)
+                    
+                  }
+                  allSum[key] = allSum[key] + value;
+            });
+
+            returnValue.sum = formattedSum
+          } catch (error) {
+            console.log(error)      
+          }
+            
+            // return {
+            //   zoneName: account.zoneName,
+            //   sum: formattedSum,
+            // };
+          return returnValue
+          
         });
-        // formatedAccounts.push({
-        //     zoneName: "ALL",
-        //     sum: formattedAllSum,
-        //   });
+
   
-        const newFormattedAccounts = [
-          // 第一元素是 ALL
-          {
-            zoneName: "ALL",
-            sum: formattedAllSum,
-          },
-          ...formatedAccounts
-          ]
-        item.json.formatedAccounts = newFormattedAccounts;
-  }
+          const formattedAllSum = {};
+          Object.keys(allSum).forEach(key => {
+              if (key.toLowerCase().match('__typename')){
+                 return;
+              }
+                const value = allSum[key];
+               if (key.toLowerCase().match('bytes')){
+                   const bandWidth=value/8
+                   formattedAllSum['bandWidth']=formatBytes(bandWidth);
+                   formattedAllSum[key] = formatBytes(value);
+               }else {
+                 formattedAllSum[key] = formatNumber(value)
+               }
+          });
+
   
-  
-  return $input.all();
+          // formatedAccounts.push({
+          //     zoneName: "ALL",
+          //     sum: formattedAllSum,
+          //   });
+    
+          const newFormattedAccounts = [
+            // 第一元素是 ALL
+            {
+              zoneName: "ALL",
+              sum: formattedAllSum,
+            },
+            ...formatedAccounts
+            ]
+          item.json.formatedAccounts = newFormattedAccounts;
+    
+}
+
+
+return $input.all();

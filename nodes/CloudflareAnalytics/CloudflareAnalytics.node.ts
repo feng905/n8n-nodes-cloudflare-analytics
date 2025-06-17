@@ -125,6 +125,7 @@ export class CloudflareAnalytics implements INodeType {
 						outputItems.push(newItem);
 					}
 				}
+				items[itemIndex].json.user = { email:String(credentials.email)};
 				items[itemIndex].json.dateRange = dateRange;
 				items[itemIndex].json.accounts = allGraphqlResponses;
 			} catch (error) {
