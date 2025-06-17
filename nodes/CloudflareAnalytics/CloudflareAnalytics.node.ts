@@ -15,7 +15,7 @@ export class CloudflareAnalytics implements INodeType {
 		name: 'cloudflareAnalytics',
 		group: ['transform'],
 		version: 1,
-		description: 'Cloudflare Analytics raphql',
+		description: 'Cloudflare Analytics graphql',
 		icon: { light: 'file:cloudflare-dashboard.svg', dark: 'file:cloudflare-dashboard.svg' },
 		defaults: {
 			name: 'Cloudflare Analytics',
@@ -103,11 +103,8 @@ export class CloudflareAnalytics implements INodeType {
 				console.log('dateRange:', dateRange);
 				const allGraphqlResponses: any[] = [];
 				let hasAllAccount = false;
-				for (const accountInfo of accountInfos) {
-					if (accountInfo.name === 'ALL') {
-						hasAllAccount = true;
-						break;		
-					}
+				if(accountNames.includes('ALL')){
+					hasAllAccount = true;
 				}
 
 				for (const accountInfo of accountInfos) {
@@ -128,6 +125,7 @@ export class CloudflareAnalytics implements INodeType {
 						outputItems.push(newItem);
 					}
 				}
+				items[itemIndex].json.dateRange = dateRange;
 				items[itemIndex].json.accounts = allGraphqlResponses;
 			} catch (error) {
 				if (this.continueOnFail()) {

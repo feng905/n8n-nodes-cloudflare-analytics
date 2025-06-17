@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-cloudflare-analytics",
-  "version": "0.1.0",
-  "description": "use cloudflare analytics api",
+  "version": "0.1.2",
+  "description": "help get cloudflare analytics data",
   "keywords": [
     "n8n-community-node-package","cloudflare","analytics"
   ],

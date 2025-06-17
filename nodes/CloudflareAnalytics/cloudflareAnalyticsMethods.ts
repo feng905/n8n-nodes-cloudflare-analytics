@@ -77,6 +77,8 @@ export const getSelectedDateRange = (timeSelect: string, dateStart: string, date
 
     // 将end的秒置零
     end = end - (end % (1000 * 60));
+    // 再减1秒
+    end = end - 1000;
 
     // 默认输出过去7天的时间范围
     let start = end - 1000 * 60 * 60 * 24 * 7;
