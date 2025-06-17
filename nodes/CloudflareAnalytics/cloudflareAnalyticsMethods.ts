@@ -77,8 +77,6 @@ export const getSelectedDateRange = (timeSelect: string, dateStart: string, date
 
     // 将end的秒置零
     end = end - (end % (1000 * 60));
-    // 再减1秒
-    end = end - 1000;
 
     // 默认输出过去7天的时间范围
     let start = end - 1000 * 60 * 60 * 24 * 7;
@@ -92,6 +90,8 @@ export const getSelectedDateRange = (timeSelect: string, dateStart: string, date
     if (timeSelect === '3') {
         const d1 = new Date(dateStart);
         const d2 = new Date(dateEnd);
+        // 让 d2 时间减去 1 秒钟
+        d2.setTime(d2.getTime() - 1000);
         return {
             dateStart: formatDateWithoutMilliseconds(d1),
             dateEnd : formatDateWithoutMilliseconds(d2)
@@ -109,6 +109,8 @@ export const getSelectedDateRange = (timeSelect: string, dateStart: string, date
     else {
         start = end - 1000 * 60 * 60 * 24 * 7;
     }
+    // 再减1秒
+    end = end - 1000;
     return {
         dateStart: formatDateWithoutMilliseconds(new Date(start)),
         dateEnd: formatDateWithoutMilliseconds(new Date(end))

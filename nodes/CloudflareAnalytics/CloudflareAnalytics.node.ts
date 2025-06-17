@@ -82,8 +82,8 @@ export class CloudflareAnalytics implements INodeType {
 		const items = this.getInputData();
 		const credentials = await this.getCredentials('cloudflareAnalyticsApi');
 		const outputItems: INodeExecutionData[] = [];
-		console.log('credentials:', credentials);
-		console.log('items:', items);
+		// console.log('credentials:', credentials);
+		// console.log('items:', items);
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			try {
 
@@ -96,11 +96,11 @@ export class CloudflareAnalytics implements INodeType {
 				const dateStart = this.getNodeParameter('dateStart', itemIndex, '') as string;
 				const dateEnd = this.getNodeParameter('dateEnd', itemIndex, '') as string;
 
-				console.log('accountNames:', accountNames);
-				console.log('timeSelect:', timeSelect);
+				// console.log('accountNames:', accountNames);
+				// console.log('timeSelect:', timeSelect);
 				
 				const dateRange = getSelectedDateRange(timeSelect,dateStart,dateEnd)
-				console.log('dateRange:', dateRange);
+				// console.log('dateRange:', dateRange);
 				const allGraphqlResponses: any[] = [];
 				let hasAllAccount = false;
 				if(accountNames.includes('ALL')){

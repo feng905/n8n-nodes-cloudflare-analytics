@@ -8,13 +8,13 @@ function formatBytes(bytes, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + units[i - 1]; // KB从1024开始
 }
 
-function formatNumber(bytes, decimals = 2) {
-  if (bytes < 1024) return bytes + "";
+function formatNumber(bytes, decimals = 2) { 
+  if (bytes < 1000) return bytes + '';
   
-  const k = 1024;
-  const units = ["K", "M", "G", "T"];
+  const k = 1000;
+  const units = ['K', 'M', 'B', 'T'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + " " + units[i - 1]; // KB从1024开始
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + units[i - 1];
 }
 
 // Loop over input items and add a new field called 'myNewField' to the JSON of each one
